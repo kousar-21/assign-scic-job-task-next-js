@@ -15,7 +15,7 @@ export default function Home() {
             <motion.div
               // className="absolute -bottom-10"
               animate={{ y: [0, 70, 0] }}
-              transition={{ ease: "easeInOut", duration: 3, repeat: Infinity }}
+              transition={{ ease: "easeInOut", duration: 8, repeat: Infinity }}
             >
               <img
                 src="https://i.postimg.cc/fTKj89wd/Adobe-Express-file-4.jpg"
@@ -27,7 +27,7 @@ export default function Home() {
             <motion.div
               className="absolute -bottom-10 lg:left-28"
               animate={{ x: [80, 180, 80] }}
-              transition={{ ease: "easeInOut", duration:3, repeat: Infinity }}
+              transition={{ ease: "easeInOut", duration:10, repeat: Infinity }}
             >
               <img
                 src="https://i.postimg.cc/wB0jP910/Adobe-Express-file-5.jpg"
