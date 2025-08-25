@@ -1,43 +1,46 @@
 'use client'
 import Link from 'next/link';
-import React from 'react'
+import React, { useState } from 'react'
 import SocialLoginPage from '../components/SocialLogin/page';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { signIn } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 export default function loginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  // const { loginUser } = useAuth();
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  // const from = location.state ? location.state : '/';
-  // console.log(location, from)
+  const router = useRouter();
+  const [authError, setAuthError] = useState("");
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from') || '/';
 
+  const onSubmit = async data => {
+    setAuthError("");
 
-  const onSubmit = data => {
-    console.log(data)
+    // Call NextAuth signIn with credentials
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password
+    });
 
-    // loginUser(data.email, data.password)
-    //   .then((result) => {
-    //     console.log(result.user)
-    //     Swal.fire({
-    //       position: "top",
-    //       icon: "success",
-    //       title: "Your Login completed successfully",
-    //       showConfirmButton: false,
-    //       timer: 1500
-    //     });
-    //     setTimeout(() => {
-    //       navigate(from)
-    //     }, 1500)
-    //   })
-    //   .catch(error => {
-    //     console.error(error.message)
-    //     toast.error(error.message)
-    //   })
-
+    if (res.error) {
+      setAuthError(res.error);
+      Swal.fire({ 
+        icon: 'error',
+        title: 'Login Failed',
+        text: res.error
+      });
+    } else {
+      Swal.fire({ 
+        icon: 'success',
+        title: 'Login Successful',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      router.push(from); // redirect to original page or home
+    }
   }
-
 
   return (
     <div className="flex items-center justify-center bg-sky-100 dark:bg-gray-600 dark:text-white py-10">
@@ -45,17 +48,20 @@ export default function loginPage() {
         <div className="card-body">
           <h1 className='text-3xl font-extrabold text-sky-500'>Welcome to website</h1>
           <h1 className="text-2xl font-bold">Please Login!</h1>
+
+          {/* Show auth error */}
+          {authError && <p className="text-red-500 text-sm mb-2">{authError}</p>}
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <fieldset className="fieldset">
+
               {/* Email field */}
               <label className="label">Email</label>
               <input type="email" className="input" placeholder="Email"
                 {...register('email', { required: true })} />
-              {
-                errors.email?.type === 'required' && <p className='text-red-500 text-sm'>Email is Required</p>
-              }
+              {errors.email?.type === 'required' && <p className='text-red-500 text-sm'>Email is Required</p>}
 
-              {/* password field */}
+              {/* Password field */}
               <label className="label">Password</label>
               <input type="password" className="input" placeholder="Password"
                 {...register('password', {
@@ -63,19 +69,14 @@ export default function loginPage() {
                   minLength: 6,
                   validate: {
                     hasCapital: (v) => /[A-Z]/.test(v) || "Must include a Capital letter",
-                    // hasSmall: (v) => /[a-z]/.test(v) || "Must include a Small letter",
-                    hasSpecial: (v) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(v) || "Must include a special character", // eslint-disable-line no-useless-escape
+                    hasSmall: (v) => /[a-z]/.test(v) || "Must include a Small letter",
+                    // hasSpecial: (v) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(v) || "Must include a special character",
                   },
                 })} />
-              {
-                errors.password?.type === 'required' && <p className='text-red-500 text-sm'>Password is Required</p>
-              }
-              {
-                errors.password?.type === 'minLength' && <p className='text-red-500 text-sm'>Password must be 6 characters or longer</p>
-              }
-              {
-                errors.password?.message && <p className='text-red-500 text-sm'>{errors.password.message}</p>
-              }
+              {errors.password?.type === 'required' && <p className='text-red-500 text-sm'>Password is Required</p>}
+              {errors.password?.type === 'minLength' && <p className='text-red-500 text-sm'>Password must be 6 characters or longer</p>}
+              {errors.password?.message && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
+
               <button className="btn btn-neutral mt-4">Login</button>
             </fieldset>
           </form>
@@ -84,7 +85,6 @@ export default function loginPage() {
           <SocialLoginPage></SocialLoginPage>
         </div>
       </div>
-
     </div>
   )
 }

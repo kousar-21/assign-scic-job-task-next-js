@@ -1,51 +1,43 @@
 'use client'
 import React from 'react'
+import { signIn } from 'next-auth/react'; 
+import { useRouter, useSearchParams } from 'next/navigation';
+import Swal from 'sweetalert2'; 
 
 export default function SocialLoginPage() {
-  // const { googleUser } = useAuth();
-  // const axiosInstance = useAxios();
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  // const from = location.state ? location.state : '/';
+  const router = useRouter(); 
+  const searchParams = useSearchParams(); 
+  const from = searchParams.get('from') || '/'; // redirect back to page or home
 
-  const handleGoogleSignIn = () => {
-    // googleUser()
-    //   .then(async (result) => {
-    //     const user = result.user;
-    //     console.log("social user data", user)
+  const handleGoogleSignIn = async () => { //implement NextAuth Google
+    try {
+      const res = await signIn("google", { redirect: false });
 
-    //     const userInfo = {
-    //       email: user.email,
-    //       name: user.displayName,
-    //       image: user.photoURL,
-    //       role: "user",
-    //       created_at: new Date().toISOString(),
-    //       last_log_in: new Date().toISOString()
-    //     }
-
-    //     const userPost = await axiosInstance.post('/users', userInfo)
-    //     console.log('google user login data', userPost.data)
-
-    //     if (user) {
-    //       Swal.fire({
-    //         position: "top",
-    //         icon: "success",
-    //         title: "Your Registration completed successfully",
-    //         showConfirmButton: false,
-    //         timer: 1500
-    //       });
-    //       setTimeout(() => {
-    //         navigate(from)
-    //       }, 1500)
-    //     }
-
-
-    //   })
-    //   .catch(error => {
-    //     console.log(error.message)
-    //     toast.error(error.message)
-    //   })
+      if (res?.error) {
+        Swal.fire({ 
+          icon: 'error',
+          title: 'Login Failed',
+          text: res.error
+        });
+      } else {
+        Swal.fire({ 
+          icon: 'success',
+          title: 'Login Successful',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        router.push(from); //redirect to original page or home
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Something went wrong',
+        text: err.message
+      });
+    }
   }
+
   return (
     <div>
       <div className="divider">OR</div>
