@@ -122,7 +122,7 @@ export default function registerPage() {
             </fieldset>
           </form>
           <div>Already have an account? please <Link href='/login'><span className='text-blue-400 underline'>Login</span></Link></div>
-          <div><SocialLoginPage></SocialLoginPage></div>
+          {/* <div><SocialLoginPage></SocialLoginPage></div> */}
         </div>
       </div>
 

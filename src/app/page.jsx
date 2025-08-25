@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from 'framer-motion';
 import Link from "next/link";
+import ProductHighlights from "./components/ProductHighlights/ProductHighlights";
 
 export default function Home() {
   return (
@@ -61,6 +62,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <ProductHighlights></ProductHighlights>
     </div>
   );
 }

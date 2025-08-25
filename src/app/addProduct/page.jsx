@@ -1,29 +1,70 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useImageUpload from "../Hooks/ImageUploadHook/useImageUpload";
+import Swal from "sweetalert2";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function AddProductPage() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [submittedData, setSubmittedData] = useState(null);
+  const { picture, handleImageUpload, error } = useImageUpload();
+  const [loading, setLoading] = useState(false);
 
-  // Replace with actual user later (e.g., from Auth context)
-  const userName = "John Doe";
+  const { data: session, status } = useSession();
+  const router = useRouter()
+  const userEmail = session?.user?.email || "";
   const currentDate = new Date().toLocaleDateString();
 
-  const onSubmit = (data) => {
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login"); // redirect if not logged in
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>; 
+  }
+
+  // console.log("userEmail data", userEmail)
+  console.log("product picture", picture)
+
+  const onSubmit = async (data) => {
+    if (!picture) {
+      alert("Please wait until image upload is complete!");
+      return;
+    }
+    setLoading(true);
+
     const productData = {
       ...data,
-      userName,
+      productImage: picture, // use uploaded image URL
+      created_by: userEmail,
       date: currentDate,
     };
 
-    console.log("Product Submitted:", productData);
-    setSubmittedData(productData);
-    reset(); // clear form after submission
+    try {
+      const res = await axios.post("/api/products", productData);
+      console.log("Saved to DB:", res.data);
+      if (res.data.insertedId) {
+        Swal.fire("Success!", "Product added successfully.", "success");
+        setSubmittedData(productData);
+        // reset();
+        setLoading(false);
+      } else {
+        Swal.fire("Error", "Failed to add product.", "error");
+      }
+
+    } catch (err) {
+      // console.error("Failed to save product:", err);
+      Swal.fire("Error", err.message, "error");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-10 px-4">
+    <div className="py-12 flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-800">
           Add New Product
@@ -42,16 +83,19 @@ export default function AddProductPage() {
             {errors.productName && <p className="text-red-500 text-sm">Product name is required</p>}
           </div>
 
-          {/* Product Image */}
+          {/* Product Image Upload */}
           <div>
-            <label className="block font-medium">Product Image URL</label>
+            <label className="block font-medium">Upload Product Image</label>
             <input
-              type="text"
-              {...register("productImage", { required: true })}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
               className="w-full border rounded-lg px-3 py-2 mt-1"
-              placeholder="Enter image URL"
             />
-            {errors.productImage && <p className="text-red-500 text-sm">Image URL is required</p>}
+            {error && <p className="text-red-500 text-sm">Image upload failed</p>}
+            {/* {picture && (
+              <img src={picture} alt="preview" className="mt-2 w-24 h-24 object-cover rounded" />
+            )} */}
           </div>
 
           {/* Market Status */}
@@ -85,7 +129,7 @@ export default function AddProductPage() {
             <label className="block font-medium">Product Value ($)</label>
             <input
               type="number"
-              {...register("productValue", { required: true, min: 1 ,valueAsNumber: true})}
+              {...register("productValue", { required: true, min: 1, valueAsNumber: true })}
               className="w-full border rounded-lg px-3 py-2 mt-1"
               placeholder="Enter value"
             />
@@ -165,11 +209,12 @@ export default function AddProductPage() {
           </div>
 
           {/* Read-only Fields */}
+          {/* Read-only Field for User */}
           <div>
-            <label className="block font-medium">User Name</label>
+            <label className="block font-medium">User Email</label>
             <input
               type="text"
-              value={userName}
+              value={userEmail}
               readOnly
               className="w-full border rounded-lg px-3 py-2 mt-1 bg-gray-100"
             />
@@ -189,9 +234,10 @@ export default function AddProductPage() {
           <div className="md:col-span-2 flex justify-center">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              disabled={!picture} //prevent submit if image not ready
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Add Product
+              Add Product{/* {loading ? "Saving..." : "Add Product"} */}
             </button>
           </div>
         </form>

@@ -12,7 +12,7 @@ export default function loginPage() {
   const router = useRouter();
   const [authError, setAuthError] = useState("");
   const searchParams = useSearchParams();
-  const from = searchParams.get('from') || '/';
+  const from = searchParams.get('from') || '/product';
 
   const onSubmit = async data => {
     setAuthError("");
@@ -82,7 +82,7 @@ export default function loginPage() {
           </form>
 
           <div>New in Website? <Link href='/register'><span className='text-blue-400 underline'>Register</span></Link> please</div>
-          <SocialLoginPage></SocialLoginPage>
+          {/* <SocialLoginPage></SocialLoginPage> */}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ export default function aboutPage() {
   // throw new Error("Something went wrong on About page!");
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="bg-base-100">
       {/* Hero / About Section */}
       <section className="hero bg-base-200 py-16">
         <div className="hero-content flex-col lg:flex-row-reverse gap-10">
@@ -31,7 +31,7 @@ export default function aboutPage() {
       </section>
 
       {/* Our Values */}
-      <section className="py-16 container mx-auto px-4">
+      <section className="py-16 container px-5 md:px-10 lg:px-20">
         <h2 className="text-3xl font-bold text-center mb-10">Our Values</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="card bg-base-200 shadow-xl p-6 text-center">
@@ -54,7 +54,7 @@ export default function aboutPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="bg-base-200 py-16">
+      <section className="bg-base-100 py-16 px-5 md:px-10 lg:px-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Contact Us</h2>
           <div className="grid md:grid-cols-2 gap-8">

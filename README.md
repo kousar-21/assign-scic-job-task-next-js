@@ -34,3 +34,44 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+
+## Project Name: My Phone Store
+
+## live site Link:
+
+
+## Short Project Description
+
+Phones Store is a full-stack web application that allows users to explore, add, and manage smartphone products. Users can view product details, including image, specifications, price, and description. Only authenticated users can add products. The project uses Next.js for the frontend, NextAuth for authentication, and MongoDB for the database. The UI is responsive and mobile-friendly.
+
+## Setup & Installation Instructions
+
+# Clone the Repository
+- git clone <your-repo-url>
+- cd <project-folder>
+
+# Install Dependencies
+- npm install
+
+
+# Setup Environment Variables
+
+Create a .env.local file at the root and add:
+- MONGODB_URI=<Your MongoDB Connection URI>
+- NEXTAUTH_SECRET=<Random Secret Key>
+- NEXT_PUBLIC_IMAGE_UPLOAD_KEY=<Your ImgBB secret key>
+
+# Run the Development Server
+- npm run dev
+
+# Route Summary
+
+- / → Home page (shows product highlights)
+- /about → About page
+- /product → All products listing
+- /addProduct → Add new product (login required)
+- /login → Login page (email/password + Google)
+- /register → Register page
+- /product/:id → Product details page
