@@ -9,6 +9,7 @@ import { usePathname, useRouter } from 'next/navigation';
 const Navbar = () => {
     // access session data
     const { data: session } = useSession();
+    console.log('session data',session)
     const pathname = usePathname();
     const router = useRouter()
     const links = [

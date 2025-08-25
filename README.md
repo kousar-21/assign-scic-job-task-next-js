@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Project Name: My Phone Store
 
-## live site Link:
+## live site Link: https://scic-nextjs.vercel.app/
 
 
 ## Short Project Description

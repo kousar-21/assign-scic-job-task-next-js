@@ -49,7 +49,19 @@ export default function registerPage() {
           showConfirmButton: false,
           timer: 1500
         });
-        router.push('/');
+
+        // Automatically sign in the new user
+        const loginResult = await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password
+        });
+
+        if (!loginResult.error) {
+          router.push("/"); // user is logged in, session valid
+        } else {
+          router.push("/login"); // fallback if signIn fails
+        }
       } else {
         // SweetAlert for error if insert failed
         Swal.fire({
